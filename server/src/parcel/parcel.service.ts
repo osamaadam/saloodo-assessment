@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { CreateParcelDto } from './dto/create-parcel.dto';
-import { UpdateParcelDto } from './dto/update-parcel.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CreateParcelDto } from "./dto/create-parcel.dto";
+import { Parcel, Status } from "./entities/parcel.entity";
 
 @Injectable()
 export class ParcelService {
+  constructor(
+    @InjectRepository(Parcel)
+    private readonly parcelRepository: Repository<Parcel>,
+  ) {}
   create(createParcelDto: CreateParcelDto) {
-    return 'This action adds a new parcel';
+    return this.parcelRepository.save(createParcelDto);
   }
 
-  findAll() {
-    return `This action returns all parcel`;
+  pickUp(id: number, bikerId: number) {
+    return this.parcelRepository.update(
+      { id, biker: { id: bikerId }, status: Status.PENDING },
+      { biker: { id: bikerId }, pickupTime: new Date() },
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} parcel`;
+  deliver(id: number, bikerId: number) {
+    return this.parcelRepository.update(
+      { id, biker: { id: bikerId }, status: Status.PICKED_UP },
+      { biker: { id: bikerId }, deliveryTime: new Date() },
+    );
   }
 
-  update(id: number, updateParcelDto: UpdateParcelDto) {
-    return `This action updates a #${id} parcel`;
+  findClientParcels(userId: number) {
+    return this.parcelRepository.find({ where: { owner: { id: userId } } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} parcel`;
+  findBikerParcels(userId: number) {
+    return this.parcelRepository.find({ where: { biker: { id: userId } } });
   }
 }

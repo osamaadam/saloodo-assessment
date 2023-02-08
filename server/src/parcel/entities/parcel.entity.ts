@@ -31,16 +31,17 @@ export class Parcel {
   @Column({ type: "timestamptz" })
   createdAt: Date;
 
-  @ManyToOne(() => User, (o) => o.clientParcels)
+  @ManyToOne(() => User, (o) => o.clientParcels, { eager: true, nullable: false })
   @Index()
   owner: User;
 
-  @ManyToOne(() => User, (b) => b.bikerParcels)
+  @ManyToOne(() => User, (b) => b.bikerParcels, { eager: true })
   @Index()
   biker: User;
 
   @BeforeInsert()
-  updateDate() {
+  updateCreateDate() {
     this.createdAt = new Date();
+    this.status = Status.PENDING;
   }
 }
