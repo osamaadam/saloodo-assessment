@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: saloodo_postgres
+    image: postgres:15
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/data/db
+    environments:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: saloodo
+
+  server:
+    container_name: saloodo_server
+    build: .
+    ports:
+      - 4000:4000
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environments:
+      NODE_ENV: development
+      PORT: 4000
+      DB_HOST: postgres
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_DATABASE: saloodo
+      DB_PORT: 5432
+
+volumes:
+  db:
+    driver: local
