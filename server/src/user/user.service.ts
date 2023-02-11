@@ -9,7 +9,7 @@ import { User } from "./entities/user.entity";
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
   create(createUserDto: CreateUserDto) {
     return this.userRepository.save(createUserDto);

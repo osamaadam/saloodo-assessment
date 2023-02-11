@@ -10,7 +10,8 @@
     "server"
   ],
   "scripts": {
-    "dev": "pnpm run dev --workspace server"
+    "dev": "cd server && pnpm start:dev",
+    "docker:up": "docker-compose up -d"
   },
   "keywords": [],
   "author": "",

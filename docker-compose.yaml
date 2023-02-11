@@ -9,7 +9,7 @@ services:
       - 5432:5432
     volumes:
       - ./db:/data/db
-    environments:
+    environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: saloodo
@@ -20,12 +20,12 @@ services:
     ports:
       - 4000:4000
     volumes:
-      - ./:/usr/src/app
+      - .:/usr/src/app
     depends_on:
       - postgres
     links:
       - postgres
-    environments:
+    environment:
       NODE_ENV: development
       PORT: 4000
       DB_HOST: postgres
@@ -33,6 +33,7 @@ services:
       DB_PASSWORD: admin
       DB_DATABASE: saloodo
       DB_PORT: 5432
+      JWT_SECRET: secret
 
 volumes:
   db:

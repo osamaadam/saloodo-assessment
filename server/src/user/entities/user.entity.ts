@@ -1,4 +1,4 @@
-import { Parcel } from "src/parcel/entities/parcel.entity";
+import { Parcel } from "../../parcel/entities/parcel.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Role {
@@ -24,10 +24,10 @@ export class User {
   @Column({ nullable: false })
   password: string;
 
-  @Column({ nullable: false, type: "enum", default: Role.CLIENT })
+  @Column({ nullable: false, type: "enum", enum: Role, default: Role.CLIENT })
   role: Role;
 
-  @Column()
+  @Column({ nullable: true })
   refreshToken: string;
 
   @OneToMany(() => Parcel, (p) => p.owner)

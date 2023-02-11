@@ -5,19 +5,25 @@ import { CreateUserDto } from "../user/dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { jwtConstants } from "./constants";
 import { AuthUser, RefreshTokenUser } from "./types/auth_user";
+import { Role } from "../user/entities/user.entity";
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UserService, private jwtService: JwtService) {}
+  constructor(
+    private usersService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   private async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     return hash(password, saltRounds);
   }
 
-  async register(dto: CreateUserDto) {
+  async register(dto: CreateUserDto, role: Role) {
+    dto.role = role;
     dto.password = await this.hashPassword(dto.password);
-    return this.usersService.create(dto);
+    const user = await this.usersService.create(dto);
+    return this.login(user);
   }
 
   async validateUser(email: string, password: string): Promise<AuthUser> {
@@ -63,7 +69,10 @@ export class AuthService {
       expiresIn: jwtConstants.refreshToken.expiresIn,
     });
 
-    const [accessToken, refreshToken] = await Promise.all([accessTokenPromise, refreshTokenPromise]);
+    const [accessToken, refreshToken] = await Promise.all([
+      accessTokenPromise,
+      refreshTokenPromise,
+    ]);
 
     return { accessToken, refreshToken };
   }

@@ -18,7 +18,12 @@ export class Parcel {
   @Column({ nullable: false })
   dropoffAddress: string;
 
-  @Column({ type: "enum", nullable: false, default: Status.PENDING })
+  @Column({
+    type: "enum",
+    enum: Status,
+    nullable: false,
+    default: Status.PENDING,
+  })
   @Index()
   status: Status;
 
@@ -31,7 +36,10 @@ export class Parcel {
   @Column({ type: "timestamptz" })
   createdAt: Date;
 
-  @ManyToOne(() => User, (o) => o.clientParcels, { eager: true, nullable: false })
+  @ManyToOne(() => User, (o) => o.clientParcels, {
+    eager: true,
+    nullable: false,
+  })
   @Index()
   owner: User;
 

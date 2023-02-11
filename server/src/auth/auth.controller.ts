@@ -1,12 +1,21 @@
-import { Body, Req, Controller, Get, Inject, Post, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Inject,
+    Post,
+    Req,
+    UseGuards
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { Request } from "express";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
+import { Role } from "../user/entities/user.entity";
 import { AuthService } from "./auth.service";
 import { RefreshTokenGuard } from "./guards/jwt-refresh.guard";
 import { LocalAuthGuard } from "./guards/local.guard";
-import { Request } from "express";
 import { Public } from "./guards/public.guard";
 import { AuthUser, RefreshTokenUser } from "./types/auth_user";
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -27,12 +36,13 @@ export class AuthController {
   }
 
   @ApiOkResponse({
-    description: "Sends an email for email verification to the provided email.",
+    description:
+      "Creates a new user and returns the access token, and the refresh token.",
   })
   @Public()
   @Post("register")
   async register(@Body() dto: CreateUserDto) {
-    return this.authService.register(dto);
+    return this.authService.register(dto, Role.CLIENT);
   }
 
   @ApiBearerAuth()
