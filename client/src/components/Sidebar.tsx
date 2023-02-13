@@ -8,19 +8,9 @@ const Sidebar = () => {
   const [collapse, setCollapse] = useState(false);
 
   const routes = [
-    { path: "/", name: "Home", visible: true },
+    { path: "/", name: "Dashboard", visible: true },
     { path: "login", name: "Sign In", visible: !userState.isLoggedIn },
     { path: "signup", name: "Sign Up", visible: !userState.isLoggedIn },
-    {
-      path: "parcels/biker",
-      name: "Parcels",
-      visible: userState.isLoggedIn && userState.user?.role === "BIKER",
-    },
-    {
-      path: "parcels/client",
-      name: "Parcels",
-      visible: userState.isLoggedIn && userState.user?.role === "CLIENT",
-    },
     {
       path: "parcels/create",
       name: "Create Parcel",

@@ -11,8 +11,28 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
   create(createUserDto: CreateUserDto) {
     return this.userRepository.save(createUserDto);
+  }
+
+  findAuth(where: { id?: number; email?: string }) {
+    if (!where.id && !where.email) {
+      throw new Error("Must provide either id or email");
+    }
+
+    return this.userRepository.findOne({
+      where,
+      select: [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "password",
+        "role",
+        "refreshToken",
+      ],
+    });
   }
 
   findOne(id: number) {

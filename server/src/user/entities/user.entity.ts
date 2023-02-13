@@ -21,13 +21,13 @@ export class User {
   @Column({ nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password: string;
 
   @Column({ nullable: false, type: "enum", enum: Role, default: Role.CLIENT })
   role: Role;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   refreshToken: string;
 
   @OneToMany(() => Parcel, (p) => p.owner)

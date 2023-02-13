@@ -1,11 +1,5 @@
 import axios from "axios";
-import { User } from "../../redux/user/userSlice";
-
-export type LoginResponse = {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-};
+import { LoginResponse } from "../types/LoginResponse";
 
 export const loginMutation = ({
   email,

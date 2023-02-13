@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LoginResponse } from "./login";
+import { LoginResponse } from "../types/LoginResponse";
 
 export const registerMutation = (credentials: {
   email: string;

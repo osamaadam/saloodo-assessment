@@ -29,9 +29,6 @@ const Login = () => {
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           const { data } = await mutation.mutateAsync(values);
-          localStorage.setItem("accessToken", data.accessToken);
-          localStorage.setItem("refreshToken", data.refreshToken);
-          localStorage.setItem("user", JSON.stringify(data.user));
           dispatch(login(data));
           setSubmitting(false);
         }}

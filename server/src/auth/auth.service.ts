@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<AuthUser> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findAuth({ email });
     if (user) {
       const matches = await compare(password, user.password);
       if (matches) {
@@ -84,7 +84,7 @@ export class AuthService {
 
     if (!id || !refreshToken) throw new ForbiddenException();
 
-    const user = await this.usersService.findOne(id);
+    const user = await this.usersService.findAuth({ id });
     if (!user) throw new ForbiddenException();
 
     if (user.refreshToken !== refreshToken) throw new ForbiddenException();

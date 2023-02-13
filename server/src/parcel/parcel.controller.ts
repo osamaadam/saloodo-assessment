@@ -15,16 +15,15 @@ import { ParcelService } from "./parcel.service";
 export class ParcelController {
   constructor(private readonly parcelService: ParcelService) {}
 
-  @Get("/biker")
-  async findAllBikerParcels(@Req() req: Request) {
-    const { user } = req;
-    return this.parcelService.findBikerParcels(user.id);
-  }
-
-  @Get("/client")
+  @Get()
   async findAllClientParcels(@Req() req: Request) {
     const { user } = req;
-    return this.parcelService.findClientParcels(user.id);
+    switch (user.role) {
+      case Role.CLIENT:
+        return this.parcelService.findClientParcels(user.id);
+      case Role.BIKER:
+        return this.parcelService.findBikerParcels(user.id);
+    }
   }
 
   @Post()
