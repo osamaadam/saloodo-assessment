@@ -1,4 +1,5 @@
 import { IsInt, IsString } from "class-validator";
+import { User } from "src/user/entities/user.entity";
 
 export class CreateParcelDto {
   @IsString()
@@ -8,5 +9,5 @@ export class CreateParcelDto {
   dropoffAddress: string;
 
   @IsInt()
-  ownerId: number;
+  owner: Partial<User>;
 }

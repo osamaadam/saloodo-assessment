@@ -36,6 +36,7 @@ export class AuthService {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          role: user.role,
         };
       }
     }
@@ -48,15 +49,16 @@ export class AuthService {
 
     await this.usersService.updateRefreshToken(user.id, refreshToken);
 
-    return { accessToken, refreshToken };
+    return { user, accessToken, refreshToken };
   }
 
   private async genTokens(user: AuthUser) {
-    const payload = {
+    const payload: AuthUser = {
       id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role,
     };
 
     const accessTokenPromise = this.jwtService.signAsync(payload, {

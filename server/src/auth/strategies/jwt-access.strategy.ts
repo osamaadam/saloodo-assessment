@@ -14,12 +14,15 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, "jwt") {
     });
   }
 
-  validate(user: AuthUser) {
-    const { id, email } = user;
+  validate(user: AuthUser): AuthUser {
+    const { id, email, firstName, lastName, role } = user;
 
     return {
       id,
       email,
+      firstName,
+      lastName,
+      role,
     };
   }
 }

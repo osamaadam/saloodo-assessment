@@ -10,8 +10,9 @@ export class ParcelService {
     @InjectRepository(Parcel)
     private readonly parcelRepository: Repository<Parcel>,
   ) {}
-  create(createParcelDto: CreateParcelDto) {
-    return this.parcelRepository.save(createParcelDto);
+  create(dto: CreateParcelDto, userId: number) {
+    dto.owner = { id: userId };
+    return this.parcelRepository.save(dto);
   }
 
   pickUp(id: number, bikerId: number) {

@@ -1,5 +1,12 @@
 import { User } from "src/user/entities/user.entity";
-import { BeforeInsert, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 export enum Status {
   PENDING = "PENDING",
@@ -27,13 +34,13 @@ export class Parcel {
   @Index()
   status: Status;
 
-  @Column({ type: "timestamptz" })
+  @Column({ type: "timestamptz", nullable: true })
   pickupTime: Date;
 
-  @Column({ type: "timestamptz" })
+  @Column({ type: "timestamptz", nullable: true })
   deliveryTime: Date;
 
-  @Column({ type: "timestamptz" })
+  @Column({ type: "timestamptz", default: new Date() })
   createdAt: Date;
 
   @ManyToOne(() => User, (o) => o.clientParcels, {

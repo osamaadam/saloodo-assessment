@@ -3,7 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { jwtConstants } from "../constants";
-import { AuthUser } from "../types/auth_user";
+import { AuthUser, RefreshTokenUser } from "../types/auth_user";
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
@@ -19,14 +19,17 @@ export class RefreshTokenStrategy extends PassportStrategy(
     });
   }
 
-  validate(@Req() req: Request, user: AuthUser) {
-    const { id, email } = user;
+  validate(@Req() req: Request, user: AuthUser): RefreshTokenUser {
+    const { id, email, firstName, lastName, role } = user;
     const refreshTokenExtractor = ExtractJwt.fromAuthHeaderAsBearerToken();
     const refreshToken = refreshTokenExtractor(req);
     return {
       id,
       email,
       refreshToken,
+      firstName,
+      lastName,
+      role,
     };
   }
 }
