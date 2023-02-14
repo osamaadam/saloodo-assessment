@@ -3,7 +3,9 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  ParseIntPipe,
   Post,
+  Query,
   Req,
 } from "@nestjs/common";
 import { Request } from "express";
@@ -14,6 +16,26 @@ import { ParcelService } from "./parcel.service";
 @Controller("parcel")
 export class ParcelController {
   constructor(private readonly parcelService: ParcelService) {}
+
+  @Post("pickup")
+  async pickUp(@Req() req: Request, @Query("id", ParseIntPipe) id: number) {
+    const { user } = req;
+    return this.parcelService.pickUp(id, user.id);
+  }
+
+  @Post("dropoff")
+  async dropoff(@Req() req: Request, @Query("id", ParseIntPipe) id: number) {
+    const { user } = req;
+    return this.parcelService.deliver(id, user.id);
+  }
+
+  @Get("available")
+  async findAllAvailableParcels(@Req() req: Request) {
+    const { user } = req;
+    if (![Role.BIKER, Role.ADMIN].includes(user.role))
+      throw new ForbiddenException("This endpoint is only available to bikers");
+    return this.parcelService.findAllAvailableParcels();
+  }
 
   @Get()
   async findAllClientParcels(@Req() req: Request) {

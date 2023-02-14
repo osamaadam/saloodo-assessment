@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance } from "..";
 import { Parcel } from "../types/Parcel";
 
 export const createParcelMutation = ({
@@ -8,7 +8,7 @@ export const createParcelMutation = ({
   pickupAddress: string;
   dropoffAddress: string;
 }) =>
-  axios.post<Parcel>("parcel", {
+  axiosInstance.post<Parcel>("parcel", {
     pickupAddress,
     dropoffAddress,
   });

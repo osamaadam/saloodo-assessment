@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance } from "..";
 import { LoginResponse } from "../types/LoginResponse";
 
 export const registerMutation = (credentials: {
@@ -6,4 +6,4 @@ export const registerMutation = (credentials: {
   password: string;
   firstName: string;
   lastName: string;
-}) => axios.post<LoginResponse>("/auth/register", credentials);
+}) => axiosInstance.post<LoginResponse>("/auth/register", credentials);

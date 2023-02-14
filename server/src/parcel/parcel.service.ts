@@ -12,21 +12,34 @@ export class ParcelService {
   ) {}
   create(dto: CreateParcelDto, userId: number) {
     dto.owner = { id: userId };
+    dto.status = Status.PENDING;
     return this.parcelRepository.save(dto);
   }
 
-  pickUp(id: number, bikerId: number) {
-    return this.parcelRepository.update(
-      { id, biker: { id: bikerId }, status: Status.PENDING },
-      { biker: { id: bikerId }, pickupTime: new Date() },
+  async pickUp(id: number, bikerId: number) {
+    await this.parcelRepository.update(
+      { id, status: Status.PENDING },
+      {
+        biker: { id: bikerId },
+        pickupTime: new Date(),
+        status: Status.PICKED_UP,
+      },
     );
+
+    return this.parcelRepository.findOneBy({ id });
   }
 
-  deliver(id: number, bikerId: number) {
-    return this.parcelRepository.update(
-      { id, biker: { id: bikerId }, status: Status.PICKED_UP },
-      { biker: { id: bikerId }, deliveryTime: new Date() },
+  async deliver(id: number, bikerId: number) {
+    await this.parcelRepository.update(
+      { id, status: Status.PICKED_UP },
+      {
+        biker: { id: bikerId },
+        deliveryTime: new Date(),
+        status: Status.DELIVERED,
+      },
     );
+
+    return this.parcelRepository.findOneBy({ id });
   }
 
   findClientParcels(userId: number) {
@@ -35,5 +48,9 @@ export class ParcelService {
 
   findBikerParcels(userId: number) {
     return this.parcelRepository.find({ where: { biker: { id: userId } } });
+  }
+
+  findAllAvailableParcels() {
+    return this.parcelRepository.find({ where: { status: Status.PENDING } });
   }
 }

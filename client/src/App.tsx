@@ -1,14 +1,16 @@
 import "./App.scss";
-import Register from "./components/Register";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/Login";
 import Sidebar from "./components/Sidebar";
-import CreateParcel from "./components/CreateParcel";
 import { useAppSelector } from "./redux/hooks";
 import { RootState } from "./redux/store";
-import { useEffect } from "react";
-import axios from "axios";
-import Dashboard from "./components/Dashboard";
+import { lazy, Suspense, useEffect } from "react";
+import { axiosInstance } from "./api";
+
+const Login = lazy(() => import("./routes/Login"));
+const Signup = lazy(() => import("./routes/Signup"));
+const DashboardRoute = lazy(() => import("./routes/Dashboard"));
+const BikerDashboardRoute = lazy(() => import("./routes/BikerDashboard"));
+const CreateParcel = lazy(() => import("./routes/parcels/Create"));
 
 function App() {
   const isLoggedIn = useAppSelector(
@@ -19,36 +21,34 @@ function App() {
   );
 
   useEffect(() => {
-    if (isLoggedIn) {
-      axios.interceptors.request.use((config) => {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-        return config;
-      });
-    }
-  }, [isLoggedIn]);
+    const token = accessToken;
+    axiosInstance.interceptors.request.use((config) => {
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    });
+
+    return () => axiosInstance.interceptors.request.clear();
+  }, [accessToken]);
 
   return (
     <main className="flex min-h-screen flex-row">
       <Sidebar />
-      <section className="w-full p-4">
-        <Routes>
-          <Route
-            path="/"
-            element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="login"
-            element={isLoggedIn ? <Navigate to="/" /> : <Login />}
-          />
-          <Route
-            path="signup"
-            element={isLoggedIn ? <Navigate to="/" /> : <Register />}
-          />
-          <Route
-            path="parcels/create"
-            element={isLoggedIn ? <CreateParcel /> : <Navigate to="/login" />}
-          />
-        </Routes>
+      <section className="w-full overflow-hidden bg-gray-100 p-4">
+        <Suspense fallback={"placeholder loading state..."}>
+          <Routes>
+            <Route path="/" element={<DashboardRoute />} />
+            <Route path="/biker" element={<BikerDashboardRoute />} />
+            <Route
+              path="login"
+              element={isLoggedIn ? <Navigate to="/" /> : <Login />}
+            />
+            <Route
+              path="signup"
+              element={isLoggedIn ? <Navigate to="/" /> : <Signup />}
+            />
+            <Route path="parcels/create" element={<CreateParcel />} />
+          </Routes>
+        </Suspense>
       </section>
     </main>
   );

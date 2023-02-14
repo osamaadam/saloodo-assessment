@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance } from "..";
 import { Parcel } from "../types/Parcel";
 
-export const parcelsQuery = () => axios.get<Parcel[]>("/parcel");
+export const parcelsQuery = () => axiosInstance.get<Parcel[]>("/parcel");
