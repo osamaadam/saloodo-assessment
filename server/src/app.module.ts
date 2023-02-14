@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { AccessTokenGuard } from "./auth/guards/jwt-access.guard";
 import { ParcelModule } from "./parcel/parcel.module";
 import { UserModule } from "./user/user.module";
+import { SeederModule } from "./seeder/seeder.module";
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE, NODE_ENV } =
   process.env;
@@ -26,6 +27,7 @@ const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE, NODE_ENV } =
     UserModule,
     ParcelModule,
     AuthModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [

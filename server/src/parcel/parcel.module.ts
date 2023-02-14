@@ -8,5 +8,6 @@ import { Parcel } from "./entities/parcel.entity";
   imports: [TypeOrmModule.forFeature([Parcel])],
   controllers: [ParcelController],
   providers: [ParcelService],
+  exports: [ParcelService],
 })
 export class ParcelModule {}

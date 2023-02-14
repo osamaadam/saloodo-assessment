@@ -10,6 +10,10 @@ export class ParcelService {
     @InjectRepository(Parcel)
     private readonly parcelRepository: Repository<Parcel>,
   ) {}
+  async parcelsCount() {
+    return this.parcelRepository.count();
+  }
+
   create(dto: CreateParcelDto, userId: number) {
     dto.owner = { id: userId };
     dto.status = Status.PENDING;

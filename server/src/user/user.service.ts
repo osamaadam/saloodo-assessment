@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { User } from "./entities/user.entity";
+import { Role, User } from "./entities/user.entity";
 
 @Injectable()
 export class UserService {
@@ -11,6 +11,18 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  findRandomClient() {
+    return this.userRepository.findOneBy({ role: Role.CLIENT });
+  }
+
+  usersCount() {
+    return this.userRepository.count();
+  }
+
+  clientsCount() {
+    return this.userRepository.count({ where: { role: Role.CLIENT } });
+  }
 
   create(createUserDto: CreateUserDto) {
     return this.userRepository.save(createUserDto);

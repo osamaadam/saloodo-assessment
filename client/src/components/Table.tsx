@@ -5,7 +5,7 @@ const Table = ({
   headers: { [key: string]: string };
   data: { [key: string]: any }[];
 }) => (
-  <article className="min-h-full w-full overflow-x-scroll rounded bg-gray-50 p-2">
+  <article className="h-full w-full overflow-scroll rounded bg-gray-50 p-2">
     <table className="min-w-full">
       <thead className="border-b">
         <tr>
