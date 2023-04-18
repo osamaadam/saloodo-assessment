@@ -38,7 +38,10 @@ const CreateParcelForm = () => {
       }}
     >
       {({ isSubmitting }) => (
-        <Form className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow ">
+        <Form
+          data-testid="create-parcel-form"
+          className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow "
+        >
           <label htmlFor="pickupAddress">Pickup Address</label>
           <Field
             as="textarea"
