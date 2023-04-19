@@ -1,6 +1,20 @@
 import { render, screen, userEvent } from "../../utils/test-utils";
 import Login from "./LoginForm";
 
+async function populateFields({
+  email = "valid.email@test.com",
+  password = "12345678",
+}: {
+  email?: string;
+  password?: string;
+}) {
+  const emailInput = screen.getByLabelText("Email");
+  const passwordInput = screen.getByLabelText("Password");
+
+  await userEvent.type(emailInput, email);
+  await userEvent.type(passwordInput, password);
+}
+
 describe("LoginForm", () => {
   it("renders", () => {
     render(<Login />);
@@ -16,9 +30,11 @@ describe("LoginForm", () => {
 
   it("is disabled until all valid", async () => {
     render(<Login />);
+
     const submitButton = screen.getByRole("button");
-    const emailInput = screen.getByLabelText("Email");
-    await userEvent.type(emailInput, "client.1@test.com");
+
+    // Invalid password
+    await populateFields({ password: "123" });
 
     expect(submitButton).toBeDisabled();
   });
@@ -26,19 +42,9 @@ describe("LoginForm", () => {
   it("is disabled until all valid 2", async () => {
     render(<Login />);
     const submitButton = screen.getByRole("button");
-    const passwordInput = screen.getByLabelText("Password");
-    await userEvent.type(passwordInput, "password");
 
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("accepts valid input", async () => {
-    render(<Login />);
-    const submitButton = screen.getByRole("button");
-    const emailInput = screen.getByLabelText("Email");
-    const passwordInput = screen.getByLabelText("Password");
-    await userEvent.type(emailInput, " ");
-    await userEvent.type(passwordInput, " ");
+    // Invalid email
+    await populateFields({ email: "invalid.email" });
 
     expect(submitButton).toBeDisabled();
   });
@@ -46,10 +52,8 @@ describe("LoginForm", () => {
   it("accepts actual email", async () => {
     render(<Login />);
     const submitButton = screen.getByRole("button");
-    const emailInput = screen.getByLabelText("Email");
-    const passwordInput = screen.getByLabelText("Password");
-    await userEvent.type(emailInput, "invalid email");
-    await userEvent.type(passwordInput, "valid password");
+
+    await populateFields({ email: "invalid email" });
 
     expect(submitButton).toBeDisabled();
   });
@@ -57,11 +61,18 @@ describe("LoginForm", () => {
   it("accepts actual password", async () => {
     render(<Login />);
     const submitButton = screen.getByRole("button");
-    const emailInput = screen.getByLabelText("Email");
-    const passwordInput = screen.getByLabelText("Password");
-    await userEvent.type(emailInput, "valid.email@test.com");
-    await userEvent.type(passwordInput, "1234567");
+
+    await populateFields({ password: "1234567" });
 
     expect(submitButton).toBeDisabled();
+  });
+
+  it("is enabled if all valid", async () => {
+    render(<Login />);
+
+    const submitButton = screen.getByRole("button");
+    await populateFields({});
+
+    expect(submitButton).toBeEnabled();
   });
 });

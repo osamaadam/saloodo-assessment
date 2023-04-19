@@ -11,6 +11,8 @@ afterEach(cleanup);
 function customRender(ui: React.ReactElement, options?: any) {
   return render(ui, {
     wrapper: ({ children }) => (
+      // Not actually properly mocking anything.
+      // Just trying to get things up and running.
       <Provider store={store}>
         <PersistGate persistor={persistor} loading={null}>
           <QueryClientProvider client={new QueryClient()}>
