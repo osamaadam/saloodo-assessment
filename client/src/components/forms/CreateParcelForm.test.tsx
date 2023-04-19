@@ -1,6 +1,20 @@
 import CreateParcelForm from "./CreateParcelForm";
 import { render, screen, userEvent } from "../../utils/test-utils";
 
+async function populateFields({
+  pickupAddress = "123 Main St",
+  dropoffAddress = "456 Side St",
+}: {
+  pickupAddress?: string;
+  dropoffAddress?: string;
+}) {
+  const pickupAddressInput = screen.getByLabelText("Pickup Address");
+  const dropoffAddressInput = screen.getByLabelText("Dropoff Address");
+
+  await userEvent.type(pickupAddressInput, pickupAddress);
+  await userEvent.type(dropoffAddressInput, dropoffAddress);
+}
+
 describe("CreateParcelForm", () => {
   it("renders", () => {
     render(<CreateParcelForm />);
@@ -18,22 +32,20 @@ describe("CreateParcelForm", () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it("is disabled until all valid", async () => {
+  it("is disabled if pickup address is invalid", async () => {
     render(<CreateParcelForm />);
 
     const submitButton = screen.getByRole("button");
-    const pickupAddressInput = screen.getByLabelText("Pickup Address");
-    await userEvent.type(pickupAddressInput, "123 Main St");
+    await populateFields({ pickupAddress: " s" });
 
     expect(submitButton).toBeDisabled();
   });
 
-  it("is disabled until all valid2", async () => {
+  it("is disabled if the dropoff  address is invalid", async () => {
     render(<CreateParcelForm />);
 
     const submitButton = screen.getByRole("button");
-    const dropoffAddressInput = screen.getByLabelText("Dropoff Address");
-    await userEvent.type(dropoffAddressInput, "123 Main St");
+    await populateFields({ dropoffAddress: " s" });
 
     expect(submitButton).toBeDisabled();
   });
@@ -42,10 +54,7 @@ describe("CreateParcelForm", () => {
     render(<CreateParcelForm />);
 
     const submitButton = screen.getByRole("button");
-    const pickupAddressInput = screen.getByLabelText("Pickup Address");
-    const dropoffAddressInput = screen.getByLabelText("Dropoff Address");
-    await userEvent.type(pickupAddressInput, "123 Main St");
-    await userEvent.type(dropoffAddressInput, "123 Main St");
+    await populateFields({});
 
     expect(submitButton).toBeEnabled();
   });
