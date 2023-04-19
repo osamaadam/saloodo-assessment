@@ -16,7 +16,7 @@ const Login = () => {
       .email("Invalid email address")
       .required("The email is required"),
     password: Yup.string()
-      .min(8, "The password has to be at least 8 characters long")
+      .min(3, "The password has to be at least 8 characters long")
       .required("The password is required"),
   });
 

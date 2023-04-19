@@ -63,7 +63,7 @@ describe("RegisterForm", () => {
     render(<Register />);
     const submitButton = screen.getByRole("button");
 
-    await populateFields({ password: "1234567" });
+    await populateFields({ password: "12", confirmPassword: "12" });
 
     expect(submitButton).toBeDisabled();
   });

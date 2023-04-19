@@ -3,7 +3,7 @@ import Login from "./LoginForm";
 
 async function populateFields({
   email = "valid.email@test.com",
-  password = "12345678",
+  password = "123",
 }: {
   email?: string;
   password?: string;
@@ -34,7 +34,7 @@ describe("LoginForm", () => {
     const submitButton = screen.getByRole("button");
 
     // Invalid password
-    await populateFields({ password: "123" });
+    await populateFields({ password: "12" });
 
     expect(submitButton).toBeDisabled();
   });
@@ -62,7 +62,8 @@ describe("LoginForm", () => {
     render(<Login />);
     const submitButton = screen.getByRole("button");
 
-    await populateFields({ password: "1234567" });
+    // Invalid password
+    await populateFields({ password: "12" });
 
     expect(submitButton).toBeDisabled();
   });
