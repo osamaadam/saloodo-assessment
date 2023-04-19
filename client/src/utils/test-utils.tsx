@@ -3,7 +3,8 @@ import { cleanup, render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { afterEach } from "vitest";
-import { store } from "../redux/store";
+import { persistor, store } from "../redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 afterEach(cleanup);
 
@@ -11,9 +12,11 @@ function customRender(ui: React.ReactElement, options?: any) {
   return render(ui, {
     wrapper: ({ children }) => (
       <Provider store={store}>
-        <QueryClientProvider client={new QueryClient()}>
-          <Router>{children}</Router>
-        </QueryClientProvider>
+        <PersistGate persistor={persistor} loading={null}>
+          <QueryClientProvider client={new QueryClient()}>
+            <Router>{children}</Router>
+          </QueryClientProvider>
+        </PersistGate>
       </Provider>
     ),
     ...options,

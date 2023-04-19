@@ -15,7 +15,9 @@ const Login = () => {
     email: Yup.string()
       .email("Invalid email address")
       .required("The email is required"),
-    password: Yup.string().required("The password is required"),
+    password: Yup.string()
+      .min(8, "The password has to be at least 8 characters long")
+      .required("The password is required"),
   });
 
   const fieldStyle =
@@ -31,10 +33,14 @@ const Login = () => {
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting }) => (
-        <Form className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow ">
+      {({ isSubmitting, isValid, dirty }) => (
+        <Form
+          data-testid="login-form"
+          className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow "
+        >
           <label htmlFor="email">Email</label>
           <Field
+            id="email"
             type="email"
             name="email"
             className={fieldStyle}
@@ -49,6 +55,7 @@ const Login = () => {
 
           <label htmlFor="password">Password</label>
           <Field
+            id="password"
             className={fieldStyle}
             type="password"
             name="password"
@@ -65,7 +72,7 @@ const Login = () => {
           <button
             type="submit"
             className="hover:box-shadow mt-4 w-full rounded bg-sky-500/80 py-1 px-2 font-bold uppercase text-white transition hover:bg-sky-600 disabled:bg-gray-200"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isValid || !dirty}
           >
             Login
           </button>

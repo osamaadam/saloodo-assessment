@@ -20,7 +20,9 @@ const Register = () => {
     email: Yup.string()
       .email("Invalid email address")
       .required("The email is required"),
-    password: Yup.string().required("The password is required"),
+    password: Yup.string()
+      .min(8, "The password has to be at least 8 characters long")
+      .required("The password is required"),
     firstName: Yup.string()
       .min(2, "Invalid name")
       .required("Please enter the first name"),
@@ -49,10 +51,14 @@ const Register = () => {
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting }) => (
-        <Form className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow ">
-          <label htmlFor="firstName">First name</label>
+      {({ isSubmitting, isValid, dirty }) => (
+        <Form
+          data-testid="register-form"
+          className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow "
+        >
+          <label htmlFor="firstName">First Name</label>
           <Field
+            id="firstName"
             type="text"
             name="firstName"
             className={fieldStyle}
@@ -65,8 +71,9 @@ const Register = () => {
             component="div"
           />
 
-          <label htmlFor="lastName">Last name</label>
+          <label htmlFor="lastName">Last Name</label>
           <Field
+            id="lastName"
             type="text"
             name="lastName"
             className={fieldStyle}
@@ -83,6 +90,7 @@ const Register = () => {
           <Field
             type="email"
             name="email"
+            id="email"
             className={fieldStyle}
             placeholder="user@domain.com"
             required
@@ -98,6 +106,7 @@ const Register = () => {
             className={fieldStyle}
             type="password"
             name="password"
+            id="password"
             autoComplete="new-password"
             placeholder="notP@ssword1"
             required
@@ -108,10 +117,11 @@ const Register = () => {
             component="div"
           />
 
-          <label htmlFor="passwordConfirmation">Confirm password</label>
+          <label htmlFor="passwordConfirmation">Confirm Password</label>
           <Field
             className={fieldStyle}
             type="password"
+            id="passwordConfirmation"
             name="passwordConfirmation"
             autoComplete="new-password"
             placeholder="notP@ssword1"
@@ -126,7 +136,7 @@ const Register = () => {
           <button
             type="submit"
             className="hover:box-shadow mt-4 w-full rounded bg-sky-500/80 py-1 px-2 font-bold uppercase text-white transition hover:bg-sky-600 disabled:bg-gray-200"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isValid || !dirty}
           >
             Sign up
           </button>
