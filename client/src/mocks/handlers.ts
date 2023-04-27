@@ -13,7 +13,7 @@ export const dummyUser = {
 };
 
 const loginHandler = rest.post("/auth/login", (_, res, ctx) => {
-  return res(ctx.json(dummyUser));
+  return res(ctx.json(dummyUser), ctx.status(200));
 });
 
 export const handlers = [loginHandler];

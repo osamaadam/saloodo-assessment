@@ -3,7 +3,8 @@ import { loginMutation } from "../../api/mutations/login";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useAppDispatch } from "../../redux/hooks";
-import { login } from "../../redux/user/userSlice";
+import { login, logout } from "../../redux/user/userSlice";
+import { isAxiosError } from "axios";
 
 const Login = () => {
   const mutation = useMutation({
@@ -27,10 +28,20 @@ const Login = () => {
     <Formik
       initialValues={{ email: "", password: "" }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
-        const { data } = await mutation.mutateAsync(values);
-        dispatch(login(data));
-        setSubmitting(false);
+      onSubmit={async (values, { setSubmitting, setErrors }) => {
+        try {
+          const { data } = await mutation.mutateAsync(values);
+          dispatch(login(data));
+        } catch (err) {
+          if (isAxiosError(err))
+            setErrors({
+              email: "Invalid email or password",
+              password: "Invalid email or password",
+            });
+          dispatch(logout());
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
       {({ isSubmitting, isValid, dirty }) => (
