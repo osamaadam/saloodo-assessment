@@ -1,5 +1,6 @@
 import Register from "./RegisterForm";
 import { render, screen, userEvent } from "../../utils/test-utils";
+import { store } from "../../redux/store";
 
 async function populateFields({
   firstName = "validFirstName",
@@ -26,6 +27,14 @@ async function populateFields({
   await userEvent.type(emailInput, email);
   await userEvent.type(passwordInput, password);
   await userEvent.type(confirmPasswordInput, confirmPassword);
+
+  return {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  };
 }
 
 describe("RegisterForm", () => {
@@ -98,5 +107,49 @@ describe("RegisterForm", () => {
     await populateFields({});
 
     expect(submitButton).toBeEnabled();
+  });
+
+  describe("submission", () => {
+    it("sets login after successful registration", async () => {
+      render(<Register />);
+
+      const submitButton = screen.getByRole("button");
+      await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      const state = store.getState();
+
+      expect(state.user.isLoggedIn).toBe(true);
+    });
+
+    it("sets correct user informaton after successful registration", async () => {
+      render(<Register />);
+
+      const submitButton = screen.getByRole("button");
+      const inputUser = await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      const state = store.getState();
+
+      expect(state.user.user?.email).toBe(inputUser.email);
+      expect(state.user.user?.firstName).toBe(inputUser.firstName);
+      expect(state.user.user?.lastName).toBe(inputUser.lastName);
+    });
+
+    it("sets user tokens after successful registration", async () => {
+      render(<Register />);
+
+      const submitButton = screen.getByRole("button");
+      await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      const state = store.getState();
+
+      expect(state.user.accessToken).toBeTruthy();
+      expect(state.user.refreshToken).toBeTruthy();
+    });
   });
 });

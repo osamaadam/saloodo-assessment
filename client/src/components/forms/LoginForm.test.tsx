@@ -1,13 +1,7 @@
 import { rest } from "msw";
 import { server } from "../../mocks/server";
 import { store } from "../../redux/store";
-import {
-  act,
-  render,
-  screen,
-  userEvent,
-  waitFor,
-} from "../../utils/test-utils";
+import { render, screen, userEvent } from "../../utils/test-utils";
 import Login from "./LoginForm";
 
 async function populateFields({

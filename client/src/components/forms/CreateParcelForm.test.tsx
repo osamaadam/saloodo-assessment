@@ -1,5 +1,6 @@
 import CreateParcelForm from "./CreateParcelForm";
 import { render, screen, userEvent } from "../../utils/test-utils";
+import { store } from "../../redux/store";
 
 async function populateFields({
   pickupAddress = "123 Main St",
@@ -13,6 +14,8 @@ async function populateFields({
 
   await userEvent.type(pickupAddressInput, pickupAddress);
   await userEvent.type(dropoffAddressInput, dropoffAddress);
+
+  return { pickupAddress, dropoffAddress };
 }
 
 describe("CreateParcelForm", () => {
@@ -59,5 +62,22 @@ describe("CreateParcelForm", () => {
     await populateFields({});
 
     expect(submitButton).toBeEnabled();
+  });
+
+  describe("submission", () => {
+    it("adds a new parcel after submission", async () => {
+      render(<CreateParcelForm />);
+
+      const submitButton = screen.getByRole("button");
+      const { pickupAddress, dropoffAddress } = await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      const state = store.getState();
+
+      expect(state.parcels.parcels.length).toBe(1);
+      expect(state.parcels.parcels[0].pickupAddress).toBe(pickupAddress);
+      expect(state.parcels.parcels[0].dropoffAddress).toBe(dropoffAddress);
+    });
   });
 });
