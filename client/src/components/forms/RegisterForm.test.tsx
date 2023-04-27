@@ -35,10 +35,60 @@ describe("RegisterForm", () => {
     expect(form).toBeInTheDocument();
   });
 
-  it("is disabled until valid", () => {
-    render(<Register />);
-    const submitButton = screen.getByRole("button");
-    expect(submitButton).toBeDisabled();
+  describe("submission is disabled", () => {
+    it("is disabled if all fields are empty", () => {
+      render(<Register />);
+      const submitButton = screen.getByRole("button");
+      expect(submitButton).toBeDisabled();
+    });
+
+    it("is disabled if the email is invalid", async () => {
+      render(<Register />);
+      const submitButton = screen.getByRole("button");
+
+      await populateFields({ email: "invalid.email" });
+
+      expect(submitButton).toBeDisabled();
+    });
+
+    it("is disabled if the password matches but is less than required length", async () => {
+      render(<Register />);
+      const submitButton = screen.getByRole("button");
+
+      await populateFields({ password: "12", confirmPassword: "12" });
+
+      expect(submitButton).toBeDisabled();
+    });
+
+    it("is disabled if the password is longer than required length but doesn't match", async () => {
+      render(<Register />);
+      const submitButton = screen.getByRole("button");
+
+      await populateFields({
+        password: "12345678",
+        confirmPassword: "123456789",
+      });
+
+      expect(submitButton).toBeDisabled();
+    });
+
+    it("is disabled if the first name is less than required length", async () => {
+      render(<Register />);
+      const submitButton = screen.getByRole("button");
+
+      await populateFields({ firstName: "x" });
+
+      expect(submitButton).toBeDisabled();
+    });
+
+    it("is disabled if last name is less than required length", async () => {
+      render(<Register />);
+      const submitButton = screen.getByRole("button");
+
+      await populateFields({ lastName: "x" });
+
+      expect(submitButton).toBeDisabled();
+    });
   });
 
   it("is enabled if all valid", async () => {
@@ -48,53 +98,5 @@ describe("RegisterForm", () => {
     await populateFields({});
 
     expect(submitButton).toBeEnabled();
-  });
-
-  it("is disabled if email is invalid", async () => {
-    render(<Register />);
-    const submitButton = screen.getByRole("button");
-
-    await populateFields({ email: "invalid.email" });
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("is disabled if password is invalid", async () => {
-    render(<Register />);
-    const submitButton = screen.getByRole("button");
-
-    await populateFields({ password: "12", confirmPassword: "12" });
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("is disabled if password and confirm password do not match", async () => {
-    render(<Register />);
-    const submitButton = screen.getByRole("button");
-
-    await populateFields({
-      password: "12345678",
-      confirmPassword: "123456789",
-    });
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("is disabled if first name is invalid", async () => {
-    render(<Register />);
-    const submitButton = screen.getByRole("button");
-
-    await populateFields({ firstName: "x" });
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("is disabled if last name is invalid", async () => {
-    render(<Register />);
-    const submitButton = screen.getByRole("button");
-
-    await populateFields({ lastName: "x" });
-
-    expect(submitButton).toBeDisabled();
   });
 });

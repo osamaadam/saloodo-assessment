@@ -22,50 +22,30 @@ describe("LoginForm", () => {
     expect(form).toBeInTheDocument();
   });
 
-  it("is disabled until valid", () => {
-    render(<Login />);
-    const submitButton = screen.getByRole("button");
-    expect(submitButton).toBeDisabled();
-  });
+  describe("submission is disabled", () => {
+    it("is disabled when all fields are empty", () => {
+      render(<Login />);
+      const submitButton = screen.getByRole("button");
+      expect(submitButton).toBeDisabled();
+    });
 
-  it("is disabled until all valid", async () => {
-    render(<Login />);
+    it("is disabled if the password is less than required length", async () => {
+      render(<Login />);
 
-    const submitButton = screen.getByRole("button");
+      const submitButton = screen.getByRole("button");
+      await populateFields({ password: "12" });
 
-    // Invalid password
-    await populateFields({ password: "12" });
+      expect(submitButton).toBeDisabled();
+    });
 
-    expect(submitButton).toBeDisabled();
-  });
+    it("is disabled if the email is invalid", async () => {
+      render(<Login />);
 
-  it("is disabled until all valid 2", async () => {
-    render(<Login />);
-    const submitButton = screen.getByRole("button");
+      const submitButton = screen.getByRole("button");
+      await populateFields({ email: "invalid.email" });
 
-    // Invalid email
-    await populateFields({ email: "invalid.email" });
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("accepts actual email", async () => {
-    render(<Login />);
-    const submitButton = screen.getByRole("button");
-
-    await populateFields({ email: "invalid email" });
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it("accepts actual password", async () => {
-    render(<Login />);
-    const submitButton = screen.getByRole("button");
-
-    // Invalid password
-    await populateFields({ password: "12" });
-
-    expect(submitButton).toBeDisabled();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
   it("is enabled if all valid", async () => {

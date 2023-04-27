@@ -24,30 +24,32 @@ describe("CreateParcelForm", () => {
     expect(form).toBeInTheDocument();
   });
 
-  it("is disabled until valid", () => {
-    render(<CreateParcelForm />);
+  describe("submission is disabled", () => {
+    it("is disabled when all fields are empty", () => {
+      render(<CreateParcelForm />);
 
-    const submitButton = screen.getByRole("button");
+      const submitButton = screen.getByRole("button");
 
-    expect(submitButton).toBeDisabled();
-  });
+      expect(submitButton).toBeDisabled();
+    });
 
-  it("is disabled if pickup address is invalid", async () => {
-    render(<CreateParcelForm />);
+    it("is disabled if pickup address is less than 3 characters long", async () => {
+      render(<CreateParcelForm />);
 
-    const submitButton = screen.getByRole("button");
-    await populateFields({ pickupAddress: " s" });
+      const submitButton = screen.getByRole("button");
+      await populateFields({ pickupAddress: " s" });
 
-    expect(submitButton).toBeDisabled();
-  });
+      expect(submitButton).toBeDisabled();
+    });
 
-  it("is disabled if the dropoff  address is invalid", async () => {
-    render(<CreateParcelForm />);
+    it("is disabled if the dropoff address is less than 3 characters long", async () => {
+      render(<CreateParcelForm />);
 
-    const submitButton = screen.getByRole("button");
-    await populateFields({ dropoffAddress: " s" });
+      const submitButton = screen.getByRole("button");
+      await populateFields({ dropoffAddress: " s" });
 
-    expect(submitButton).toBeDisabled();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
   it("is enabled when all valid", async () => {
