@@ -114,7 +114,7 @@ describe("LoginForm", () => {
     it("redirects to home page after successful login", async () => {
       render(<App />, { initialEntries: ["/login"] })
 
-      await waitFor(() => screen.findByText(/login/i))
+      await waitFor(async () => await screen.findByTestId("login-form"))
 
       const submitButton = await screen.findByRole("button", { name: /login/i });
       await populateFields({});
@@ -127,7 +127,7 @@ describe("LoginForm", () => {
     it("doesn't redirect to home page after failed login", async () => {
       render(<App />, { initialEntries: ["/login"] })
 
-      await waitFor(() => screen.findByText(/login/i))
+      await waitFor(async () => await screen.findByTestId("login-form"))
 
       server.use(
         rest.post("/auth/login", (_, res, ctx) => res.once(ctx.status(401)))

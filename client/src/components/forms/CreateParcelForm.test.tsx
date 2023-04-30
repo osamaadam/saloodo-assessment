@@ -1,5 +1,6 @@
+import App from "../../App";
 import { store } from "../../redux/store";
-import { render, screen, userEvent } from "../../utils/test-utils";
+import { login, render, screen, userEvent, waitFor } from "../../utils/test-utils";
 import CreateParcelForm from "./CreateParcelForm";
 
 async function populateFields({
@@ -80,4 +81,20 @@ describe("CreateParcelForm", () => {
       expect(state.parcels.parcels[0].dropoffAddress).toBe(dropoffAddress);
     });
   });
+
+  describe("creation (integration tests)", () => {
+    it("redirects to the parcels page after creation (which contains parcels table)", async () => {
+      login()
+      render(<App />, { initialEntries: ["/parcels/create"] })
+
+      await waitFor(() => expect(screen.getByTestId("create-parcel-form")).toBeInTheDocument())
+
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+      await populateFields({})
+
+      await userEvent.click(submitButton)
+
+      expect(await screen.findByRole("table")).toBeInTheDocument()
+    })
+  })
 });

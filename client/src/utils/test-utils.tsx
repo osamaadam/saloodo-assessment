@@ -19,6 +19,19 @@ beforeEach(() => {
   store.dispatch({ type: "parcels/reset" })
 })
 
+/**
+ * Login user if needed
+ */
+export function login() {
+  store.dispatch({
+    type: "user/login",
+    payload: {
+      email: "test@test.com",
+      password: "123",
+    },
+  })
+}
+
 function customRender(ui: React.ReactElement, options?: any) {
   return render(ui, {
     wrapper: ({ children }) => (

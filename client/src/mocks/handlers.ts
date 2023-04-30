@@ -19,6 +19,7 @@ export const dummyParcel: Partial<Parcel> = {
   dropoffAddress: "dummyDropoffAddress",
   status: "PENDING",
   owner: dummyUser.user as any,
+  createdAt: new Date(),
 };
 
 const loginHandler = rest.post("/auth/login", async (req, res, ctx) => {
@@ -38,6 +39,10 @@ const createParcelHandler = rest.post("/parcel", async (req, res, ctx) => {
   );
 });
 
+const getParcelsHandler = rest.get("/parcel", async (req, res, ctx) => {
+  return res(ctx.json([dummyParcel]), ctx.status(200));
+});
+
 const registerHandler = rest.post("/auth/register", async (req, res, ctx) => {
   const { email, firstName, lastName } = await req.json<{
     email: string;
@@ -54,4 +59,4 @@ const registerHandler = rest.post("/auth/register", async (req, res, ctx) => {
   );
 });
 
-export const handlers = [loginHandler, createParcelHandler, registerHandler];
+export const handlers = [loginHandler, createParcelHandler, getParcelsHandler, registerHandler];
