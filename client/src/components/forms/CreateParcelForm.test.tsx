@@ -1,6 +1,6 @@
-import CreateParcelForm from "./CreateParcelForm";
-import { render, screen, userEvent } from "../../utils/test-utils";
 import { store } from "../../redux/store";
+import { render, screen, userEvent } from "../../utils/test-utils";
+import CreateParcelForm from "./CreateParcelForm";
 
 async function populateFields({
   pickupAddress = "123 Main St",
@@ -65,7 +65,7 @@ describe("CreateParcelForm", () => {
   });
 
   describe("submission", () => {
-    it("adds a new parcel after submission", async () => {
+    it("adds a new parcel to the redux store after submission", async () => {
       render(<CreateParcelForm />);
 
       const submitButton = screen.getByRole("button");

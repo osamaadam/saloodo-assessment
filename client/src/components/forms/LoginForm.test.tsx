@@ -1,7 +1,8 @@
 import { rest } from "msw";
+import App from "../../App";
 import { server } from "../../mocks/server";
 import { store } from "../../redux/store";
-import { render, screen, userEvent } from "../../utils/test-utils";
+import { render, screen, userEvent, waitFor } from "../../utils/test-utils";
 import Login from "./LoginForm";
 
 async function populateFields({
@@ -61,7 +62,7 @@ describe("LoginForm", () => {
       expect(submitButton).toBeEnabled();
     });
 
-    it("sets login state after successful login", async () => {
+    it("sets login state in the redux store after successful login", async () => {
       render(<Login />);
 
       const submitButton = screen.getByRole("button");
@@ -74,7 +75,7 @@ describe("LoginForm", () => {
       expect(state.user.isLoggedIn).toBe(true);
     });
 
-    it("doesn't set login state after failed login", async () => {
+    it("doesn't set login state in the redux store after failed login", async () => {
       render(<Login />);
       server.use(
         rest.post("/auth/login", (_, res, ctx) => res.once(ctx.status(401)))
@@ -108,4 +109,38 @@ describe("LoginForm", () => {
       expect(errorMessage?.length).toBeGreaterThan(0);
     });
   });
+
+  describe("redirections (integration tests)", () => {
+    it("redirects to home page after successful login", async () => {
+      render(<App />, { initialEntries: ["/login"] })
+
+      await waitFor(() => screen.findByText(/login/i))
+
+      const submitButton = await screen.findByRole("button", { name: /login/i });
+      await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      expect(screen.getByText(/logout/i)).toBeInTheDocument()
+    })
+
+    it("doesn't redirect to home page after failed login", async () => {
+      render(<App />, { initialEntries: ["/login"] })
+
+      await waitFor(() => screen.findByText(/login/i))
+
+      server.use(
+        rest.post("/auth/login", (_, res, ctx) => res.once(ctx.status(401)))
+      );
+
+      const submitButton = await screen.findByRole("button", { name: /login/i });
+      await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      waitFor(async () => await screen.findByText(/invalid/i))
+
+      expect(screen.getByText(/login/i)).toBeInTheDocument()
+    })
+  })
 });

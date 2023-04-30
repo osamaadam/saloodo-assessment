@@ -1,6 +1,6 @@
-import Register from "./RegisterForm";
-import { render, screen, userEvent } from "../../utils/test-utils";
 import { store } from "../../redux/store";
+import { render, screen, userEvent } from "../../utils/test-utils";
+import Register from "./RegisterForm";
 
 async function populateFields({
   firstName = "validFirstName",

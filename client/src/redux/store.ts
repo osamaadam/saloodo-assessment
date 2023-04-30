@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import parcelsReducer from "./parcels/parcelsSlice";
 import userReducer from "./user/userSlice";
-import ParcelsReducer from "./parcels/parcelsSlice";
 
 const persistedUserReducer = persistReducer(
   { key: "user", storage },
@@ -12,7 +12,7 @@ const persistedUserReducer = persistReducer(
 export const store = configureStore({
   reducer: {
     user: persistedUserReducer,
-    parcels: ParcelsReducer,
+    parcels: parcelsReducer,
   },
 });
 
