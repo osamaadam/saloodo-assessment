@@ -94,7 +94,7 @@ describe("CreateParcelForm", () => {
 
       await userEvent.click(submitButton)
 
-      expect(await screen.findByRole("table")).toBeInTheDocument()
+      expect(await screen.findByTestId("dashboard-table")).toBeInTheDocument()
     })
   })
 });

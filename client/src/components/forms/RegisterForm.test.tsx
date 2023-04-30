@@ -1,6 +1,9 @@
+import App from "../../App";
+import { server } from "../../mocks/server";
 import { store } from "../../redux/store";
-import { render, screen, userEvent } from "../../utils/test-utils";
+import { render, screen, userEvent, waitFor } from "../../utils/test-utils";
 import Register from "./RegisterForm";
+import { rest } from "msw"
 
 async function populateFields({
   firstName = "validFirstName",
@@ -152,4 +155,38 @@ describe("RegisterForm", () => {
       expect(state.user.refreshToken).toBeTruthy();
     });
   });
+
+  describe("post-registration (integration tests)", () => {
+    it("redirects to the dashboard after successful registration", async () => {
+      render(<App />, { initialEntries: ['/signup'] });
+
+      await waitFor(() => expect(screen.getByTestId("register-form")).toBeInTheDocument())
+
+      const submitButton = screen.getByRole("button", { name: /sign up/i });
+      await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      expect(await screen.findByTestId("dashboard-table")).toBeInTheDocument();
+    })
+
+    it("doesn't redirect to the dashboard after failed registration", async () => {
+      render(<App />, { initialEntries: ['/signup'] });
+
+      server.use(
+        rest.post("/auth/register", (_, res, ctx) => {
+          return res(ctx.status(400))
+        })
+      )
+
+      await waitFor(() => expect(screen.getByTestId("register-form")).toBeInTheDocument())
+
+      const submitButton = screen.getByRole("button", { name: /sign up/i });
+      await populateFields({});
+
+      await userEvent.click(submitButton);
+
+      expect(await screen.findByTestId("register-form")).toBeInTheDocument();
+    })
+  })
 });

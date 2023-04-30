@@ -121,7 +121,7 @@ describe("LoginForm", () => {
 
       await userEvent.click(submitButton);
 
-      expect(screen.getByText(/logout/i)).toBeInTheDocument()
+      expect(await screen.findByTestId("dashboard-table")).toBeInTheDocument()
     })
 
     it("doesn't redirect to home page after failed login", async () => {
@@ -138,9 +138,7 @@ describe("LoginForm", () => {
 
       await userEvent.click(submitButton);
 
-      waitFor(async () => await screen.findByText(/invalid/i))
-
-      expect(screen.getByText(/login/i)).toBeInTheDocument()
+      expect(await screen.findByTestId("login-form")).toBeInTheDocument()
     })
   })
 });

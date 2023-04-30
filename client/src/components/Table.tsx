@@ -1,12 +1,13 @@
 const Table = ({
   headers,
   data,
+  ...props
 }: {
   headers: { [key: string]: string };
   data: { [key: string]: any }[];
 }) => (
   <article className="h-full w-full overflow-scroll rounded bg-gray-50 p-2">
-    <table className="min-w-full">
+    <table {...props} className="min-w-full" >
       <thead className="border-b">
         <tr>
           {Object.values(headers).map((header) => (

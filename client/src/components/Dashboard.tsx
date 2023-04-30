@@ -128,6 +128,7 @@ const Dashboard = () => {
   if (!parcels.length) return null;
   return (
     <Table
+      data-testid="dashboard-table"
       headers={
         role === "CLIENT"
           ? { ...baseHeaders, ...clientHeaders }
