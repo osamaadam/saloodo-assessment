@@ -36,9 +36,8 @@ const CreateParcelForm = () => {
     <Formik
       initialValues={{ pickupAddress: "", dropoffAddress: "" }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values) => {
         await mutation.mutateAsync(values);
-        setSubmitting(false);
       }}
     >
       {({ isSubmitting, isValid, dirty }) => (

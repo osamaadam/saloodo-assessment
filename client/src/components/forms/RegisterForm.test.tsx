@@ -173,9 +173,11 @@ describe("RegisterForm", () => {
     it("doesn't redirect to the dashboard after failed registration", async () => {
       render(<App />, { initialEntries: ['/signup'] });
 
+      await waitFor(() => expect(screen.getByTestId("register-form")).toBeInTheDocument())
+
       server.use(
         rest.post("/auth/register", (_, res, ctx) => {
-          return res(ctx.status(400))
+          return res.once(ctx.status(401))
         })
       )
 

@@ -39,8 +39,6 @@ const Login = () => {
               password: "Invalid email or password",
             });
           dispatch(logout());
-        } finally {
-          setSubmitting(false);
         }
       }}
     >

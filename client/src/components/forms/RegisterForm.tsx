@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useAppDispatch } from "../../redux/hooks";
 import { login } from "../../redux/user/userSlice";
 import { registerMutation } from "../../api/mutations/register";
+import { isAxiosError } from "axios";
 
 const Register = () => {
   const mutation = useMutation({
@@ -42,13 +43,18 @@ const Register = () => {
     <Formik
       initialValues={{ email: "", password: "", firstName: "", lastName: "" }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
-        const { data } = await mutation.mutateAsync(values);
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        dispatch(login(data));
-        setSubmitting(false);
+      onSubmit={async (values, { setFieldError }) => {
+        try {
+          const { data } = await mutation.mutateAsync(values);
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          dispatch(login(data));
+        } catch (err) {
+          if (isAxiosError(err)) {
+            setFieldError("email", "Email already exists")
+          }
+        }
       }}
     >
       {({ isSubmitting, isValid, dirty }) => (
