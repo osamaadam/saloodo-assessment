@@ -3,7 +3,8 @@ import { loginMutation } from "../../api/mutations/login";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useAppDispatch } from "../../redux/hooks";
-import { login } from "../../redux/user/userSlice";
+import { login, logout } from "../../redux/user/userSlice";
+import { isAxiosError } from "axios";
 
 const Login = () => {
   const mutation = useMutation({
@@ -15,7 +16,9 @@ const Login = () => {
     email: Yup.string()
       .email("Invalid email address")
       .required("The email is required"),
-    password: Yup.string().required("The password is required"),
+    password: Yup.string()
+      .min(3, "The password has to be at least 8 characters long")
+      .required("The password is required"),
   });
 
   const fieldStyle =
@@ -25,16 +28,28 @@ const Login = () => {
     <Formik
       initialValues={{ email: "", password: "" }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
-        const { data } = await mutation.mutateAsync(values);
-        dispatch(login(data));
-        setSubmitting(false);
+      onSubmit={async (values, { setSubmitting, setErrors }) => {
+        try {
+          const { data } = await mutation.mutateAsync(values);
+          dispatch(login(data));
+        } catch (err) {
+          if (isAxiosError(err))
+            setErrors({
+              email: "Invalid email or password",
+              password: "Invalid email or password",
+            });
+          dispatch(logout());
+        }
       }}
     >
-      {({ isSubmitting }) => (
-        <Form className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow ">
+      {({ isSubmitting, isValid, dirty }) => (
+        <Form
+          data-testid="login-form"
+          className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow "
+        >
           <label htmlFor="email">Email</label>
           <Field
+            id="email"
             type="email"
             name="email"
             className={fieldStyle}
@@ -49,6 +64,7 @@ const Login = () => {
 
           <label htmlFor="password">Password</label>
           <Field
+            id="password"
             className={fieldStyle}
             type="password"
             name="password"
@@ -65,7 +81,7 @@ const Login = () => {
           <button
             type="submit"
             className="hover:box-shadow mt-4 w-full rounded bg-sky-500/80 py-1 px-2 font-bold uppercase text-white transition hover:bg-sky-600 disabled:bg-gray-200"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isValid || !dirty}
           >
             Login
           </button>

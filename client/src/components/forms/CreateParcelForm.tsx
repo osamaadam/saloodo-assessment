@@ -21,8 +21,12 @@ const CreateParcelForm = () => {
   });
 
   const validationSchema = Yup.object({
-    pickupAddress: Yup.string().required("The pickup address is required"),
-    dropoffAddress: Yup.string().required("The dropoff address is required"),
+    pickupAddress: Yup.string()
+      .required("The pickup address is required")
+      .min(3),
+    dropoffAddress: Yup.string()
+      .required("The dropoff address is required")
+      .min(3),
   });
 
   const fieldStyle =
@@ -32,15 +36,18 @@ const CreateParcelForm = () => {
     <Formik
       initialValues={{ pickupAddress: "", dropoffAddress: "" }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values) => {
         await mutation.mutateAsync(values);
-        setSubmitting(false);
       }}
     >
-      {({ isSubmitting }) => (
-        <Form className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow ">
+      {({ isSubmitting, isValid, dirty }) => (
+        <Form
+          data-testid="create-parcel-form"
+          className="flex w-full max-w-md flex-col gap-y-2 rounded border border-gray-50 bg-gray-50 p-4 drop-shadow "
+        >
           <label htmlFor="pickupAddress">Pickup Address</label>
           <Field
+            id="pickupAddress"
             as="textarea"
             name="pickupAddress"
             className={fieldStyle}
@@ -55,6 +62,7 @@ const CreateParcelForm = () => {
 
           <label htmlFor="dropoffAddress">Dropoff Address</label>
           <Field
+            id="dropoffAddress"
             className={fieldStyle}
             as="textarea"
             name="dropoffAddress"
@@ -70,7 +78,7 @@ const CreateParcelForm = () => {
           <button
             type="submit"
             className="hover:box-shadow mt-4 w-full rounded bg-sky-500/80 py-1 px-2 font-bold uppercase text-white transition hover:bg-sky-600 disabled:bg-gray-200"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isValid || !dirty}
           >
             Submit
           </button>

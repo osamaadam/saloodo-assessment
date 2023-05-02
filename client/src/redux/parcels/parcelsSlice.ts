@@ -31,6 +31,7 @@ export const parcelsSlice = createSlice({
         (a, b) => b.id - a.id
       );
     },
+    reset: () => initialState,
   },
 });
 

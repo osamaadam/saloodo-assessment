@@ -45,6 +45,7 @@ export const userSlice = createSlice({
       state.refreshToken = null;
       state.isLoggedIn = false;
     },
+    reset: () => initialState,
   },
 });
 
